@@ -15,11 +15,27 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="flex h-screen">
+      {/* <body className="flex h-screen">
         <SideBar />
-        <div className="flex flex-col w-full">
+        <div className="flex flex-col w-full flex-1 overflow-hidden">
+          <div>
+            <Header />
+          </div>
+          <main className="flex-1 overflow-auto w-full p-4 bg-gray-100 text-black pt-[7rem]">
+            {children}
+          </main>
+        </div>
+      </body> */}
+      <body className="flex h-screen">
+        {/* Sidebar with fixed width */}
+        <div className="w-[20%] ">
+          <SideBar />
+        </div>
+
+        {/* Main Content */}
+        <div className="flex flex-col flex-1 overflow-hidden">
           <Header />
-          <main className="flex-1 overflow-auto p-4 bg-gray-100 text-black pt-[7rem]">
+          <main className="flex-1 overflow-auto w-full p-4 bg-gray-100 text-black pt-[7rem]">
             {children}
           </main>
         </div>
