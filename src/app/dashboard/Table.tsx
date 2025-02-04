@@ -1,3 +1,4 @@
+'use client'
 import {
   flexRender,
   ColumnDef,
@@ -10,7 +11,7 @@ import {
   OnChangeFn,
 } from "@tanstack/react-table";
 import { MdArrowForwardIos, MdArrowBackIos } from "react-icons/md";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export interface TableData {
   id: number;
@@ -25,17 +26,23 @@ interface TableProps {
   columns: ColumnDef<TableData>[];
   data: TableData[];
   onSortingChange?: OnChangeFn<SortingState>;
+  searchQuery?: string;
 }
 
 const CustomTable: React.FC<TableProps> = ({
   data,
   columns,
   onSortingChange,
+  searchQuery = "",
 }) => {
   const [sorting, setSorting] = useState<SortingState>([]);
-  const [filtering, setFiltering] = useState("");
+  const [filtering, setFiltering] = useState(searchQuery);
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
+
+    useEffect(() => {
+      setFiltering(searchQuery);
+    }, [searchQuery]);
 
   const table = useReactTable({
     data,
@@ -46,7 +53,7 @@ const CustomTable: React.FC<TableProps> = ({
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      globalFilter: filtering,
+      globalFilter:  filtering,
       pagination: { pageIndex, pageSize },
     },
     onSortingChange: (updater) => {

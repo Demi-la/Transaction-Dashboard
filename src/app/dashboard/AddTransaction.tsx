@@ -35,14 +35,14 @@ const AddTransaction: React.FC<AddTransactionProps> = ({
     const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: name === "amount" ? parseFloat(value) : value, // Convert amount to number
+      [name]: name === "amount" ? parseFloat(value) : value, 
     }));
   };
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    onAddTransaction(formData); // Pass the transaction to Dashboard
-    onClose(); // Close modal after submission
+    onAddTransaction(formData);
+    onClose();
   };
 
   return (

@@ -1,6 +1,6 @@
 'use client'
 import { ColumnDef } from "@tanstack/react-table";
-import CustomTable, { TableData } from "./Table"; // Import TableData type
+import CustomTable, { TableData } from "./Table";
 import { useEffect, useState } from "react";
 import DashboardHeader from "./DashboardHeader";
 import AddTransaction from "./AddTransaction";
@@ -9,6 +9,7 @@ const Dashboard = () => {
 
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [transactions, setTransactions] = useState<TableData[]>([]);
+    const [searchQuery, setSearchQuery] = useState("");
    useEffect(() => {
      const savedTransactions = localStorage.getItem("transactions");
      if (savedTransactions) {
@@ -89,14 +90,22 @@ const Dashboard = () => {
       <h2 className="mb-8 font-bold text-[#2d416f] text-[1.2rem]">
         Transactions
       </h2>
-      <DashboardHeader onOpenModal={() => setIsModalOpen(true)} />
+      <DashboardHeader
+        onOpenModal={() => setIsModalOpen(true)}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+      />
       <AddTransaction
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
         onAddTransaction={handleAddTransaction}
       />
       {transactions.length > 0 ? (
-        <CustomTable columns={TransactionsColumns} data={transactions} />
+        <CustomTable
+          columns={TransactionsColumns}
+          data={transactions}
+          searchQuery={searchQuery}
+        />
       ) : (
         <p>Loading transactions...</p>
       )}
