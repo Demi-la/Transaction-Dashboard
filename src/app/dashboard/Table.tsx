@@ -17,7 +17,7 @@ export interface TableData {
   id: number;
   senderName: string;
   receiverName: string;
-  amount: string;
+  amount: number;
   status: "Pending" | "Completed" | "Failed";
   timestamp: string;
 }
