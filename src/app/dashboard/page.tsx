@@ -1,48 +1,76 @@
-'use client'
+"use client";
 import { ColumnDef } from "@tanstack/react-table";
 import CustomTable, { TableData } from "./Table";
 import { useEffect, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import DashboardHeader from "./DashboardHeader";
 import AddTransaction from "./AddTransaction";
+import Actions from "@/components/Actions";
 
 const Dashboard = () => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [transactions, setTransactions] = useState<TableData[]>([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  useEffect(() => {
+    const savedTransactions = localStorage.getItem("transactions");
+    if (savedTransactions) {
+      setTransactions(JSON.parse(savedTransactions));
+      setIsLoading(false);
+    } else {
+      fetch("/data.json")
+        .then((response) => response.json())
+        .then((data) => {
+          setTransactions(data);
+          localStorage.setItem("transactions", JSON.stringify(data));
+          setIsLoading(false);
+        })
+        .catch((error) => {
+          // console.error(error);
+          setError("Error fetching transactions. Please try again later.");
+          setIsLoading(false);
+        });
+    }
+  }, []);
+  if (error) {
+    return <p className="text-red-500">{error}</p>;
+  }
 
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [transactions, setTransactions] = useState<TableData[]>([]);
-    const [searchQuery, setSearchQuery] = useState("");
-   useEffect(() => {
-     const savedTransactions = localStorage.getItem("transactions");
-     if (savedTransactions) {
-       setTransactions(JSON.parse(savedTransactions));
-     } else {
-       fetch("/data.json")
-         .then((response) => response.json())
-         .then((data) => {
-           setTransactions(data);
-           localStorage.setItem("transactions", JSON.stringify(data));
-         })
-         .catch((error) =>
-           console.error("Error fetching transactions:", error)
-         );
-     }
-   }, []);
+  const handleAddTransaction = (transaction: TableData) => {
+    const newTransaction = {
+      ...transaction,
+      id: Date.now(),
+      //  id: transactions.length + 1,
+    };
+    toast.success(`Transaction has been added successfully.`);
+    const updatedTransactions = [newTransaction, ...transactions];
+    setTransactions(updatedTransactions);
+    localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
+  };
 
- const handleAddTransaction = (transaction: TableData) => {
-   const newTransaction = {
-     ...transaction,
-     id: Date.now(),
-     //  id: transactions.length + 1,
-   };
+  const handleDelete = (id: number) => {
+    const updatedTransactions = transactions.filter(
+      (transaction) => transaction.id !== id
+    );
+    toast.success(`Transaction has been deleted successfully.`);
+    setTransactions(updatedTransactions);
+    localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
+  };
 
-   const updatedTransactions = [newTransaction, ...transactions];
-   setTransactions(updatedTransactions);
-   localStorage.setItem("transactions", JSON.stringify(updatedTransactions));
- };
+  const handleEditTransaction = (id: number, updatedTransaction: TableData) => {
+    const updatedTransactions = transactions.map((transaction) =>
+      transaction.id === id ? updatedTransaction : transaction
+    );
+    toast.success(`Transaction has been updated successfully.`);
+    setTransactions(updatedTransactions);
+  };
   const TransactionsColumns: ColumnDef<TableData>[] = [
     {
       accessorKey: "id",
       header: "S/N",
-      cell: (info) => <span>{info.row.index + 1}</span>, 
+      cell: (info) => <span>{info.row.index + 1}</span>,
       enableSorting: false,
     },
     {
@@ -83,10 +111,29 @@ const Dashboard = () => {
       header: "Date",
       cell: (info) => new Date(info.getValue() as string).toLocaleDateString(),
     },
+    {
+      header: "Actions",
+      cell: (info) => {
+        const transactionid = info.row.original.id;
+        return (
+          <Actions
+            id={transactionid}
+            onDelete={handleDelete}
+            onEdit={handleEditTransaction}
+            transaction={info.row.original}
+          />
+        );
+      },
+    },
   ];
 
   return (
-    <div className="bg-white p-8 w-[100%]">
+    <div className="bg-white lg:p-8 p-4 w-full">
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={true}
+      />
       <h2 className="mb-8 font-bold text-[#2d416f] text-[1.2rem]">
         Transactions
       </h2>
@@ -100,14 +147,14 @@ const Dashboard = () => {
         onClose={() => setIsModalOpen(false)}
         onAddTransaction={handleAddTransaction}
       />
-      {transactions.length > 0 ? (
+      {isLoading ? (
+        <p>Loading transactions...</p>
+      ) : (
         <CustomTable
           columns={TransactionsColumns}
           data={transactions}
           searchQuery={searchQuery}
         />
-      ) : (
-        <p>Loading transactions...</p>
       )}
     </div>
   );

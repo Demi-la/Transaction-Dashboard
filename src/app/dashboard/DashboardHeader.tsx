@@ -13,7 +13,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
 }) => {
 
   return (
-    <div className="flex items-center justify-between bg-gray-100 p-4 mb-6 ">
+    <div className="flex flex-col md:flex-row items-center justify-between bg-gray-100 p-4 mb-6 ">
       <div className="flex items-center border bg-white border-[#cde1e3] rounded-md w-[17.7rem] h-[2.5rem]">
         <input
           type="text"
@@ -26,7 +26,7 @@ const DashboardHeader: React.FC<DashboardHeaderProps> = ({
           <CiSearch className="ml-2" />
         </button>
       </div>
-      <Button onClick={onOpenModal}>Add Transaction</Button>
+      <Button onClick={onOpenModal} className="mt-4 lg:mt-0">Add Transaction</Button>
     </div>
   );
 };

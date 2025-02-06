@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   flexRender,
   ColumnDef,
@@ -40,9 +40,9 @@ const CustomTable: React.FC<TableProps> = ({
   const [pageIndex, setPageIndex] = useState(0);
   const [pageSize, setPageSize] = useState(10);
 
-    useEffect(() => {
-      setFiltering(searchQuery);
-    }, [searchQuery]);
+  useEffect(() => {
+    setFiltering(searchQuery);
+  }, [searchQuery]);
 
   const table = useReactTable({
     data,
@@ -53,7 +53,7 @@ const CustomTable: React.FC<TableProps> = ({
     getFilteredRowModel: getFilteredRowModel(),
     state: {
       sorting,
-      globalFilter:  filtering,
+      globalFilter: filtering,
       pagination: { pageIndex, pageSize },
     },
     onSortingChange: (updater) => {
@@ -78,9 +78,9 @@ const CustomTable: React.FC<TableProps> = ({
   });
 
   return (
-    <div>
-      <table className="w-full mx-auto">
-        <thead className="bg-[#2d416f] text-white text-sm font-medium h-16">
+    <div className="overflow-x-auto">
+      <table className="w-full mx-auto min-w-max">
+        <thead className="bg-[#2d416f] text-white text-[0.7rem] md:text-sm lg:text-sm  font-medium h-16">
           {table.getHeaderGroups().map((headerGroup) => (
             <tr key={headerGroup.id}>
               {headerGroup.headers.map((header) => (
@@ -108,7 +108,7 @@ const CustomTable: React.FC<TableProps> = ({
           ))}
         </thead>
 
-        <tbody className="text-[0.8rem] font-normal text-[#2d416f] text-center">
+        <tbody className="text-[0.6rem] md:text-[0.8rem] lg:text-[0.8rem] font-normal text-[#2d416f] text-center">
           {table.getRowModel().rows.map((row) => (
             <tr key={row.id}>
               {row.getVisibleCells().map((cell) => (
