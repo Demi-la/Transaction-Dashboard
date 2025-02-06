@@ -27,8 +27,7 @@ const Dashboard = () => {
           localStorage.setItem("transactions", JSON.stringify(data));
           setIsLoading(false);
         })
-        .catch((error) => {
-          // console.error(error);
+        .catch(() => {
           setError("Error fetching transactions. Please try again later.");
           setIsLoading(false);
         });

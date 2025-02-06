@@ -37,7 +37,7 @@ const TransactionDetails = () => {
         }
 
         setTransaction(foundTransaction);
-      } catch (err) {
+      } catch  {
         setError("Error loading transaction");
       } finally {
         setIsLoading(false);
